@@ -4,9 +4,9 @@ import Register from "./pages/Register";
 import MovieList from "./pages/MovieList";
 import AddEditMovie from "./pages/AddEditMovie";
 import Navbar from "./components/Navbar";
-
+import { useAuth } from "./context/AuthContext";
 function App() {
-  const isAuthenticated = !!localStorage.getItem("token");
+  const { token } = useAuth();
 
   return (
     <>
@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={isAuthenticated ? <Navigate to="/movies" /> : <Login />}
+          element={token ? <Navigate to="/movies" /> : <Login />}
         />
         <Route path="/register" element={<Register />} />
         <Route path="/movies" element={<MovieList />} />

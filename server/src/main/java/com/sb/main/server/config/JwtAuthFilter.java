@@ -31,23 +31,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
-        String email = jwtUtils.extractEmail(token);
+        try {
+            String token = authHeader.substring(7);
+            String email = jwtUtils.extractEmail(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userRepository.findByEmail(email).orElse(null);
-            if (user != null && jwtUtils.validateToken(token, org.springframework.security.core.userdetails.User
-                    .withUsername(user.getEmail())
-                    .password(user.getPassword())
-                    .authorities(Collections.emptyList())
-                    .build())) {
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                User user = userRepository.findByEmail(email).orElse(null);
+                if (user != null && jwtUtils.validateToken(token, org.springframework.security.core.userdetails.User
+                        .withUsername(user.getEmail())
+                        .password(user.getPassword())
+                        .authorities(Collections.emptyList())
+                        .build())) {
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user.getEmail(), null, Collections.emptyList()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            user.getEmail(), null, Collections.emptyList()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (Exception e) {
+            // Log the error but don't block the request
+            System.out.println("JWT processing error: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

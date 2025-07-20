@@ -5,7 +5,9 @@ import com.sb.main.server.entity.Movie;
 import com.sb.main.server.entity.User;
 import com.sb.main.server.repository.MovieRepository;
 import com.sb.main.server.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,15 @@ public class MovieService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+
+    public MovieDTO getMovieById(Long id, String email) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Movie not found"));
+        if (!movie.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+        return MovieDTO.from(movie);
+    }
+
 
     public MovieDTO addMovie(String email, Movie movie) {
         User user = userRepository.findByEmail(email).orElseThrow();
