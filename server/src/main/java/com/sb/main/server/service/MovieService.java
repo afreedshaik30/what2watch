@@ -5,11 +5,12 @@ import com.sb.main.server.entity.Movie;
 import com.sb.main.server.entity.User;
 import com.sb.main.server.repository.MovieRepository;
 import com.sb.main.server.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,55 +19,68 @@ import java.util.stream.Collectors;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
+    private final ImgBBService imgBBService;
 
-    public List<MovieDTO> getUserMovies(String email) {
+    public MovieDTO addMovie(String email, String name, String description, String link, String genre, MultipartFile poster) throws IOException {
         User user = userRepository.findByEmail(email).orElseThrow();
-        return movieRepository.findByUserId(user.getId())
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        Movie movie = new Movie();
+        movie.setName(name);
+        movie.setDescription(description);
+        movie.setLink(link);
+        movie.setGenre(genre);
+        movie.setUser(user);
+
+        if (poster != null && !poster.isEmpty()) {
+            movie.setPosterUrl(imgBBService.uploadImage(poster));
+        }
+
+        return MovieDTO.from(movieRepository.save(movie));
+    }
+
+    public MovieDTO updateMovie(Long id, String email, String name, String description, String link, String genre, MultipartFile poster) throws IOException {
+        Movie movie = movieRepository.findById(id).orElseThrow();
+        if (!movie.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        movie.setName(name);
+        movie.setDescription(description);
+        movie.setLink(link);
+        movie.setGenre(genre);
+
+        if (poster != null && !poster.isEmpty()) {
+            movie.setPosterUrl(imgBBService.uploadImage(poster));
+        }
+
+        return MovieDTO.from(movieRepository.save(movie));
+    }
+
+    public List<MovieDTO> getUserMovies(String email, String name, String genre) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        List<Movie> movies;
+
+        if (name != null && genre != null) {
+            movies = movieRepository.findByUserIdAndNameContainingIgnoreCaseAndGenreIgnoreCase(user.getId(), name, genre);
+        } else if (name != null) {
+            movies = movieRepository.findByUserIdAndNameContainingIgnoreCase(user.getId(), name);
+        } else if (genre != null) {
+            movies = movieRepository.findByUserIdAndGenreIgnoreCase(user.getId(), genre);
+        } else {
+            movies = movieRepository.findByUserId(user.getId());
+        }
+
+        return movies.stream().map(MovieDTO::from).collect(Collectors.toList());
     }
 
     public MovieDTO getMovieById(Long id, String email) {
-        Movie movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Movie not found"));
-        if (!movie.getUser().getEmail().equals(email)) {
-            throw new AccessDeniedException("Unauthorized access");
-        }
+        Movie movie = movieRepository.findById(id).orElseThrow();
+        if (!movie.getUser().getEmail().equals(email)) throw new AccessDeniedException("Unauthorized");
         return MovieDTO.from(movie);
     }
 
-
-    public MovieDTO addMovie(String email, Movie movie) {
-        User user = userRepository.findByEmail(email).orElseThrow();
-        movie.setUser(user);
-        return mapToDTO(movieRepository.save(movie));
-    }
-
-    public MovieDTO updateMovie(Long movieId, String email, Movie updatedMovie) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow();
-        if (!movie.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized");
-        }
-        movie.setName(updatedMovie.getName());
-        movie.setDescription(updatedMovie.getDescription());
-        movie.setLink(updatedMovie.getLink());
-        return mapToDTO(movieRepository.save(movie));
-    }
-
-    public void deleteMovie(Long movieId, String email) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow();
-        if (!movie.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized");
-        }
+    public void deleteMovie(Long id, String email) {
+        Movie movie = movieRepository.findById(id).orElseThrow();
+        if (!movie.getUser().getEmail().equals(email)) throw new RuntimeException("Unauthorized");
         movieRepository.delete(movie);
-    }
-
-    private MovieDTO mapToDTO(Movie movie) {
-        return new MovieDTO(
-                movie.getId(),
-                movie.getName(),
-                movie.getDescription(),
-                movie.getLink()
-        );
     }
 }

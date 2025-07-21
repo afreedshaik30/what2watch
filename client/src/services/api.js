@@ -1,4 +1,3 @@
-// services/api.js
 import axios from "axios";
 
 const API = axios.create({
@@ -30,16 +29,38 @@ API.interceptors.response.use(
 export const login = (data) => API.post("/auth/login", data);
 export const register = (data) => API.post("/auth/register", data);
 
-// Movie API calls
-export const getMovies = () => API.get("/movies");
+// Movie API calls with FormData support
+export const addMovie = (data) => {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("description", data.description);
+  if (data.link) formData.append("link", data.link);
+  if (data.genre) formData.append("genre", data.genre);
+  if (data.poster) formData.append("poster", data.poster);
+  return API.post("/movies", formData);
+};
+
+export const updateMovie = (id, data) => {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("description", data.description);
+  if (data.link) formData.append("link", data.link);
+  if (data.genre) formData.append("genre", data.genre);
+  if (data.poster) formData.append("poster", data.poster);
+  return API.put(`/movies/${id}`, formData);
+};
+
+// Get with filters: /movies?name=...&genre=...
+export const getMovies = (filters = {}) => {
+  const query = new URLSearchParams(filters).toString();
+  return API.get(`/movies${query ? `?${query}` : ""}`);
+};
+
 export const getMovie = (id) => API.get(`/movies/${id}`);
-export const addMovie = (data) => API.post("/movies", data);
-export const updateMovie = (id, data) => API.put(`/movies/${id}`, data);
 export const deleteMovie = (id) => API.delete(`/movies/${id}`);
 
 // Utility function to extract token from the string response
 export const extractTokenFromResponse = (tokenString) => {
-  // Extract token from "AuthResponse(token=actual_token_here)"
   const match = tokenString.match(/token=([^)]+)/);
   return match ? match[1] : null;
 };

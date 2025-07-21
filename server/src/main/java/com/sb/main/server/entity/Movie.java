@@ -18,6 +18,8 @@ public class Movie {
     private String name;
     private String description;
     private String link;
+    private String genre;
+    private String posterUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

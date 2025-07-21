@@ -13,13 +13,17 @@ public class MovieDTO {
     private String name;
     private String description;
     private String link;
+    private String genre;
+    private String posterUrl;
 
     public static MovieDTO from(Movie movie) {
         return new MovieDTO(
                 movie.getId(),
                 movie.getName(),
                 movie.getDescription(),
-                movie.getLink()
+                movie.getLink(),
+                movie.getGenre(),
+                movie.getPosterUrl()
         );
     }
 }

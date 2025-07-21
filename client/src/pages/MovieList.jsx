@@ -7,6 +7,7 @@ export default function MovieList() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({ name: "", genre: "" });
   const navigate = useNavigate();
   const { token } = useAuth();
 
@@ -14,7 +15,11 @@ export default function MovieList() {
     try {
       setLoading(true);
       setError("");
-      const res = await getMovies();
+
+      const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, v]) => v.trim() !== "")
+      );
+      const res = await getMovies(cleanFilters);
 
       if (res.data.success) {
         setMovies(res.data.data || []);
@@ -51,27 +56,30 @@ export default function MovieList() {
       return;
     }
     loadMovies();
-  }, [token, navigate]);
+  }, [token]);
 
-  if (loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>Loading movies...</h2>
-      </div>
-    );
-  }
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    loadMovies();
+  };
 
   return (
-    <div style={{ maxWidth: "800px", margin: "20px auto", padding: "20px" }}>
+    <div style={{ maxWidth: "1000px", margin: "30px auto", padding: "20px" }}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "30px",
+          marginBottom: "25px",
         }}
       >
-        <h2>My Watchlist</h2>
+        <h2 style={{ fontSize: "28px", fontWeight: "600", color: "#333" }}>
+          🎬 My Watchlist
+        </h2>
         <button
           onClick={() => navigate("/movies/new")}
           style={{
@@ -79,34 +87,103 @@ export default function MovieList() {
             backgroundColor: "#007bff",
             color: "white",
             border: "none",
-            borderRadius: "4px",
+            borderRadius: "6px",
             cursor: "pointer",
+            fontSize: "16px",
           }}
         >
-          Add Movie
+          ➕ Add Movie
         </button>
       </div>
 
+      {/* 🔍 Search / Filter UI */}
+      <form
+        onSubmit={handleSearch}
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "15px",
+          marginBottom: "25px",
+          background: "#f1f1f1",
+          padding: "20px",
+          borderRadius: "8px",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Search by name..."
+          value={filters.name}
+          onChange={handleFilterChange}
+          style={{
+            flexGrow: 1,
+            flexBasis: "calc(45%)",
+            minWidth: "250px",
+            padding: "14px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+          }}
+        />
+        <input
+          type="text"
+          name="genre"
+          placeholder="Filter by genre..."
+          value={filters.genre}
+          onChange={handleFilterChange}
+          style={{
+            flexGrow: 1,
+            flexBasis: "calc(45%)",
+            minWidth: "250px",
+            padding: "14px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "14px 30px",
+            backgroundColor: "#28a745",
+            color: "#fff",
+            fontWeight: "bold",
+            border: "none",
+            borderRadius: "6px",
+            fontSize: "16px",
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          🔍 Search
+        </button>
+      </form>
+
+      {/* ❌ Error */}
       {error && (
         <div
           style={{
-            color: "red",
-            marginBottom: "20px",
-            padding: "10px",
             backgroundColor: "#ffebee",
-            borderRadius: "4px",
+            color: "#c62828",
+            padding: "12px",
+            marginBottom: "20px",
+            borderRadius: "6px",
           }}
         >
           {error}
           <button
             onClick={loadMovies}
             style={{
-              marginLeft: "10px",
-              padding: "5px 10px",
+              marginLeft: "15px",
               backgroundColor: "#007bff",
-              color: "white",
+              color: "#fff",
+              padding: "5px 10px",
               border: "none",
               borderRadius: "4px",
+              cursor: "pointer",
             }}
           >
             Retry
@@ -114,112 +191,122 @@ export default function MovieList() {
         </div>
       )}
 
-      {movies.length === 0 ? (
+      {/* ⏳ Loading */}
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h2>Loading movies...</h2>
+        </div>
+      ) : movies.length === 0 ? (
         <div
           style={{
             textAlign: "center",
             padding: "40px",
             backgroundColor: "#f8f9fa",
-            borderRadius: "4px",
+            borderRadius: "6px",
           }}
         >
-          <h3>No movies in your watchlist</h3>
-          <p>Add your first movie to get started!</p>
-          <button
-            onClick={() => navigate("/movies/new")}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Add Your First Movie
-          </button>
+          <h3>No movies found</h3>
+          <p>Try different filters or add a new movie!</p>
         </div>
       ) : (
-        <div style={{ display: "grid", gap: "15px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "20px",
+          }}
+        >
           {movies.map((movie) => (
             <div
               key={movie.id}
               style={{
                 border: "1px solid #ddd",
-                borderRadius: "8px",
-                padding: "20px",
+                borderRadius: "10px",
                 backgroundColor: "#fff",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
+              {movie.posterUrl && (
+                <img
+                  src={movie.posterUrl}
+                  alt={`${movie.name} Poster`}
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderBottom: "1px solid #eee",
+                  }}
+                />
+              )}
+
+              <div style={{ padding: "16px", flex: 1 }}>
+                <h3 style={{ margin: "0 0 10px", color: "#333" }}>
+                  {movie.name}
+                </h3>
+                <p style={{ color: "#666", marginBottom: "10px" }}>
+                  {movie.description}
+                </p>
+                {movie.genre && (
+                  <p style={{ fontSize: "14px", color: "#888" }}>
+                    🎭 Genre: {movie.genre}
+                  </p>
+                )}
+                {movie.link && (
+                  <a
+                    href={movie.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-block",
+                      marginTop: "10px",
+                      color: "#007bff",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                    }}
+                  >
+                    ▶ Watch Trailer
+                  </a>
+                )}
+              </div>
+
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "flex-start",
+                  padding: "16px",
+                  borderTop: "1px solid #eee",
+                  backgroundColor: "#fafafa",
                 }}
               >
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ margin: "0 0 10px 0", color: "#333" }}>
-                    {movie.name}
-                  </h3>
-                  <p
-                    style={{
-                      margin: "0 0 15px 0",
-                      color: "#666",
-                      lineHeight: "1.5",
-                    }}
-                  >
-                    {movie.description}
-                  </p>
-                  {movie.link && (
-                    <a
-                      href={movie.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        color: "#007bff",
-                        textDecoration: "none",
-                        fontSize: "14px",
-                      }}
-                    >
-                      🎬 Watch Movie
-                    </a>
-                  )}
-                </div>
-
-                <div
-                  style={{ display: "flex", gap: "10px", marginLeft: "20px" }}
+                <button
+                  onClick={() => navigate(`/movies/edit/${movie.id}`)}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#ffc107",
+                    color: "black",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
                 >
-                  <button
-                    onClick={() => navigate(`/movies/edit/${movie.id}`)}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(movie.id)}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(movie.id)}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#dc3545",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  🗑 Delete
+                </button>
               </div>
             </div>
           ))}

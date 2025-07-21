@@ -4,7 +4,10 @@ import Register from "./pages/Register";
 import MovieList from "./pages/MovieList";
 import AddEditMovie from "./pages/AddEditMovie";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./services/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import "./App.css";
+
 function App() {
   const { token } = useAuth();
 
@@ -17,9 +20,32 @@ function App() {
           element={token ? <Navigate to="/movies" /> : <Login />}
         />
         <Route path="/register" element={<Register />} />
-        <Route path="/movies" element={<MovieList />} />
-        <Route path="/movies/new" element={<AddEditMovie />} />
-        <Route path="/movies/edit/:id" element={<AddEditMovie />} />
+
+        {/* ✅ Protected Routes */}
+        <Route
+          path="/movies"
+          element={
+            <ProtectedRoute>
+              <MovieList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/movies/new"
+          element={
+            <ProtectedRoute>
+              <AddEditMovie />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/movies/edit/:id"
+          element={
+            <ProtectedRoute>
+              <AddEditMovie />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
