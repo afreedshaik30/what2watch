@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+.nav-link-modern {
+  @apply text-white hover:text-orange-400 text-lg font-medium transition duration-200;
+}
+
+.mobile-link-modern {
+  @apply block text-white hover:text-orange-400 text-base font-medium transition;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top {
+    display: none;
+  }
+}

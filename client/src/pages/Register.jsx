@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { register } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -42,39 +42,25 @@ export default function Register() {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px" }}>
+    <div className="max-w-md mx-auto my-12 p-6 border rounded-lg shadow-lg bg-white">
+      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+        Register
+      </h2>
+
+      {error && (
+        <div className="text-red-700 bg-red-100 p-3 mb-4 rounded-md text-sm">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="text-green-700 bg-green-100 p-3 mb-4 rounded-md text-sm">
+          {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
-        <h2>Register</h2>
-
-        {error && (
-          <div
-            style={{
-              color: "red",
-              marginBottom: "15px",
-              padding: "10px",
-              backgroundColor: "#ffebee",
-              borderRadius: "4px",
-            }}
-          >
-            {error}
-          </div>
-        )}
-
-        {success && (
-          <div
-            style={{
-              color: "green",
-              marginBottom: "15px",
-              padding: "10px",
-              backgroundColor: "#e8f5e8",
-              borderRadius: "4px",
-            }}
-          >
-            {success}
-          </div>
-        )}
-
-        <div style={{ marginBottom: "15px" }}>
+        <div className="mb-4">
           <input
             name="username"
             type="text"
@@ -82,16 +68,11 @@ export default function Register() {
             value={form.username}
             onChange={handleChange}
             required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
+        <div className="mb-4">
           <input
             name="email"
             type="email"
@@ -99,16 +80,11 @@ export default function Register() {
             value={form.email}
             onChange={handleChange}
             required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
+        <div className="mb-4">
           <input
             name="password"
             type="password"
@@ -117,36 +93,27 @@ export default function Register() {
             onChange={handleChange}
             required
             minLength="6"
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: loading ? "#ccc" : "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          className={`w-full py-2 rounded text-white font-semibold ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600"
+          }`}
         >
           {loading ? "Registering..." : "Register"}
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "15px" }}>
+        <p className="text-center mt-4 text-sm text-gray-700">
           Already have an account?{" "}
-          <a href="/" style={{ color: "#007bff" }}>
+          <Link to="/login" className="text-orange-500 hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </form>
     </div>

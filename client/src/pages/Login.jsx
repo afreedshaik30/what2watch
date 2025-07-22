@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { login, extractTokenFromResponse } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -26,7 +26,7 @@ export default function Login() {
         const token = extractTokenFromResponse(res.data.data.token);
         if (token) {
           authLogin(token);
-          navigate("/movies");
+          navigate("/watchlist");
         } else {
           setError("Invalid token format");
         }
@@ -43,25 +43,19 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px" }}>
+    <div className="max-w-sm mx-auto mt-12 p-6 bg-white rounded-lg shadow-lg">
       <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Login
+        </h2>
 
         {error && (
-          <div
-            style={{
-              color: "red",
-              marginBottom: "15px",
-              padding: "10px",
-              backgroundColor: "#ffebee",
-              borderRadius: "4px",
-            }}
-          >
+          <div className="mb-4 p-3 text-red-600 bg-red-100 rounded-md text-sm">
             {error}
           </div>
         )}
 
-        <div style={{ marginBottom: "15px" }}>
+        <div className="mb-4">
           <input
             name="email"
             type="email"
@@ -69,16 +63,11 @@ export default function Login() {
             value={form.email}
             onChange={handleChange}
             required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
+        <div className="mb-4">
           <input
             name="password"
             type="password"
@@ -86,36 +75,27 @@ export default function Login() {
             value={form.password}
             onChange={handleChange}
             required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: loading ? "#ccc" : "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          className={`w-full py-2 px-4 text-white rounded-md transition duration-200 ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600"
+          }`}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "15px" }}>
-          Don't have an account?{" "}
-          <a href="/register" style={{ color: "#007bff" }}>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="text-orange-500 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </form>
     </div>

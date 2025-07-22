@@ -1,12 +1,16 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import MovieList from "./pages/MovieList";
+import Watchlist from "./pages/Watchlist";
 import AddEditMovie from "./pages/AddEditMovie";
+import DetailPage from "./pages/DetailPage";
+import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import ProtectedRoute from "./services/ProtectedRoute";
+import Footer from "./components/Footer";
+import Movies from "./pages/Movies";
+import Shows from "./pages/Shows";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
-import "./App.css";
 
 function App() {
   const { token } = useAuth();
@@ -15,23 +19,24 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route
-          path="/"
-          element={token ? <Navigate to="/movies" /> : <Login />}
-        />
+        {/* 1.Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/movie" element={<Movies />} />
+        <Route path="/tv" element={<Shows />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* ✅ Protected Routes */}
+        <Route path="/:type/:id" element={<DetailPage />} />
+        {/* 2.Protected Routes */}
         <Route
-          path="/movies"
+          path="/watchlist"
           element={
             <ProtectedRoute>
-              <MovieList />
+              <Watchlist />
             </ProtectedRoute>
           }
         />
         <Route
-          path="/movies/new"
+          path="/watchlist/new"
           element={
             <ProtectedRoute>
               <AddEditMovie />
@@ -39,7 +44,7 @@ function App() {
           }
         />
         <Route
-          path="/movies/edit/:id"
+          path="/watchlist/edit/:id"
           element={
             <ProtectedRoute>
               <AddEditMovie />
@@ -47,6 +52,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </>
   );
 }
