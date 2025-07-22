@@ -9,7 +9,7 @@ import {
 } from "../services/tmdb";
 
 import MovieCard from "../components/MovieCard";
-import { Filter, Globe } from "lucide-react";
+import { Filter, Globe, Clapperboard, Tv } from "lucide-react";
 
 export default function MediaBrowser({ mediaType }) {
   const [search, setSearch] = useState("");
@@ -49,7 +49,7 @@ export default function MediaBrowser({ mediaType }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 text-white">
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex justify-center flex-col sm:flex-row gap-4 mb-6">
         <input
           type="text"
           placeholder={`Search ${mediaType === "tv" ? "shows" : "movies"}...`}
@@ -59,7 +59,7 @@ export default function MediaBrowser({ mediaType }) {
             setSelectedGenre("");
             setSelectedLang("");
           }}
-          className="px-4 py-2 bg-gray-800 border border-gray-600 rounded w-full sm:w-64"
+          className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-3xl w-full sm:w-64"
         />
 
         <div className="flex items-center gap-2">
@@ -103,10 +103,19 @@ export default function MediaBrowser({ mediaType }) {
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-4">
-        {mediaType === "tv" ? "📺 Show Results" : "🎬 Movie Results"}
+      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-white">
+        {mediaType === "tv" ? (
+          <>
+            <Tv className="w-5 h-5 text-orange-400" />
+            Tv Shows
+          </>
+        ) : (
+          <>
+            <Clapperboard className="w-5 h-5 text-orange-400" />
+            Movies
+          </>
+        )}
       </h2>
-
       {results.length === 0 ? (
         <p className="text-gray-400 italic">No results found.</p>
       ) : (

@@ -11,6 +11,7 @@ import {
   PlayCircle,
   Loader2,
   AlertCircle,
+  FileVideo,
 } from "lucide-react";
 
 function Watchlist() {
@@ -76,25 +77,27 @@ function Watchlist() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
-        <h2 className="flex items-center gap-2 text-3xl font-light text-white tracking-tight">
-          <Film className="w-8 h-8" />
+        <h2 className="flex items-center gap-2 text-2xl md:text-3xl font-bold text-white">
+          <Film className="w-8 h-8 text-orange-400" />
           My Watchlist
         </h2>
 
         <button
           onClick={() => navigate("/watchlist/new")}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-2.5 px-5 rounded-lg shadow-md transition"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-2.5 px-5 rounded-lg shadow-lg transition duration-200"
         >
-          <PlusCircle className="w-5 h-5" /> Add Movie
+          <PlusCircle className="w-5 h-5" />
+          Add Movie
         </button>
       </div>
 
       {/* Filter form */}
       <form
         onSubmit={handleSearch}
-        className="shadow-md rounded-xl px-6 py-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-10"
+        className="bg-white/5 border border-white/10 backdrop-blur-md shadow-md rounded-xl px-6 py-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-10"
       >
         <input
           type="text"
@@ -102,7 +105,7 @@ function Watchlist() {
           placeholder="Search by name..."
           value={filters.name}
           onChange={handleFilterChange}
-          className="flex-1 p-3 border border-orange-400 rounded-lg focus:outline-none focus:ring-3 focus:ring-orange-500 text-sm"
+          className="flex-1 p-3 border border-orange-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-white bg-transparent placeholder-gray-400"
         />
         <input
           type="text"
@@ -110,19 +113,20 @@ function Watchlist() {
           placeholder="Filter by genre..."
           value={filters.genre}
           onChange={handleFilterChange}
-          className="flex-1 p-3 border border-orange-400 rounded-lg focus:outline-none focus:ring-3 focus:ring-orange-500 text-sm"
+          className="flex-1 p-3 border border-orange-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-white bg-transparent placeholder-gray-400"
         />
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-md transition"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-md transition duration-200"
         >
-          <Search className="w-4 h-4" /> Search
+          <Search className="w-4 h-4" />
+          Search
         </button>
       </form>
 
       {/* Error message */}
       {error && (
-        <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg mb-6 flex justify-between items-center shadow-sm">
+        <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg mb-6 flex justify-between items-center shadow">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-5 h-5" />
             <span>{error}</span>
@@ -136,18 +140,18 @@ function Watchlist() {
         </div>
       )}
 
-      {/* Loading */}
+      {/* Loading state */}
       {loading ? (
         <div className="text-center py-20">
-          <Loader2 className="w-10 h-10 animate-spin mx-auto text-gray-600" />
-          <p className="mt-4 text-gray-500">Loading movies...</p>
+          <Loader2 className="w-10 h-10 animate-spin mx-auto text-gray-400" />
+          <p className="mt-4 text-gray-400">Loading movies...</p>
         </div>
       ) : movies.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-xl shadow-inner">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+        <div className="text-center py-20 bg-gray-800 rounded-xl shadow-inner border border-white/10">
+          <h3 className="text-lg font-semibold text-white mb-2">
             No movies found
           </h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-400">
             Try different filters or add a new movie!
           </p>
         </div>
@@ -156,27 +160,26 @@ function Watchlist() {
           {movies.map((movie) => (
             <div
               key={movie.id}
-              className="backdrop-blur bg-white/80 border border-gray-200 rounded-2xl shadow-lg overflow-hidden flex flex-col transition hover:shadow-xl"
+              className="bg-white/10 border border-white/10 rounded-2xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition duration-200 backdrop-blur-md"
             >
               {movie.posterUrl && (
                 <img
                   src={movie.posterUrl}
                   alt={`${movie.name} Poster`}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-56 object-cover"
                 />
               )}
 
-              <div className="p-5 flex-1 flex flex-col justify-between">
+              <div className="p-5 flex-1 flex flex-col justify-between text-white">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                    {movie.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 line-clamp-3">
+                  <h3 className="text-lg font-semibold mb-1">{movie.name}</h3>
+                  <p className="text-sm text-gray-300 line-clamp-3">
                     {movie.description}
                   </p>
                   {movie.genre && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      🎭 Genre: {movie.genre}
+                    <p className="text-xs text-orange-400 mt-2 flex items-center gap-1">
+                      <FileVideo className="w-4 h-4" />
+                      Genre: {movie.genre}
                     </p>
                   )}
                   {movie.link && (
@@ -184,15 +187,16 @@ function Watchlist() {
                       href={movie.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline mt-3"
+                      className="inline-flex items-center gap-1 text-sm text-blue-400 hover:underline mt-3"
                     >
-                      <PlayCircle className="w-4 h-4" /> Watch Trailer
+                      <PlayCircle className="w-4 h-4" />
+                      Watch
                     </a>
                   )}
                 </div>
               </div>
 
-              <div className="flex justify-between items-center px-5 py-3 border-t bg-gray-50">
+              <div className="flex justify-between items-center px-5 py-3 border-t border-white/10 bg-black/10">
                 <button
                   onClick={() => navigate(`/watchlist/edit/${movie.id}`)}
                   className="inline-flex items-center gap-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-3 py-1.5 rounded-md"

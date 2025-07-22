@@ -16,13 +16,12 @@ function Navbar() {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-
   return (
-    <nav className="bg-black/80 backdrop-blur-md shadow-md sticky top-0 z-50 border-b-4 border-orange-500">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <nav className="bg-black/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-b border-orange-500">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <h2
-          className="text-3xl font-extrabold text-orange-400 hover:text-orange-500 cursor-pointer transition"
+          className="text-2xl sm:text-3xl font-bold text-orange-400 hover:text-orange-500 transition-colors cursor-pointer"
           onClick={() => {
             setIsOpen(false);
             navigate("/");
@@ -31,48 +30,54 @@ function Navbar() {
           What2Watch
         </h2>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex space-x-6 text-white text-sm font-medium">
-          <Link to="/" className="hover:text-orange-400">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6 text-sm font-medium text-white">
+          <Link to="/" className="hover:text-orange-400 transition-colors">
             Home
           </Link>
-          <Link to="/movie" className="hover:text-orange-400">
+          <Link to="/movie" className="hover:text-orange-400 transition-colors">
             Movies
           </Link>
-          <Link to="/tv" className="hover:text-orange-400">
+          <Link to="/tv" className="hover:text-orange-400 transition-colors">
             Shows
           </Link>
 
           {token ? (
             <>
-              <Link to="/watchlist" className="hover:text-orange-400">
+              <Link
+                to="/watchlist"
+                className="hover:text-orange-400 transition-colors"
+              >
                 Watchlist
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
+                className="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-md text-sm font-semibold transition"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-orange-400">
+              <Link
+                to="/login"
+                className="hover:text-orange-400 transition-colors"
+              >
                 Login
               </Link>
-              <Link to="/register" className="hover:text-orange-400">
+              <Link
+                to="/register"
+                className="hover:text-orange-400 transition-colors"
+              >
                 Register
               </Link>
             </>
           )}
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
-          <button
-            onClick={toggleMenu}
-            className="text-white focus:outline-none"
-          >
+          <button onClick={toggleMenu} className="text-white">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -99,9 +104,9 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
+      {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="md:hidden bg-black/90 text-white px-4 py-3 space-y-2 transition-all">
+        <div className="md:hidden bg-black/90 text-white px-6 py-7 space-y-2 transition-all text-center">
           <Link
             to="/"
             onClick={() => setIsOpen(false)}
@@ -135,7 +140,7 @@ function Navbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-[140px] bg-red-600 hover:bg-red-700 text-white py-2 mt-2 rounded"
+                className="w-[120px] bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition"
               >
                 Logout
               </button>

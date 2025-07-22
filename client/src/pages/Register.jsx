@@ -42,80 +42,82 @@ export default function Register() {
   };
 
   return (
-    <div className="max-w-md mx-auto my-12 p-6 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-        Register
-      </h2>
+    <div className="w-full max-w-md mx-auto my-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white border rounded-lg shadow-lg p-6 sm:p-8">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Register
+        </h2>
 
-      {error && (
-        <div className="text-red-700 bg-red-100 p-3 mb-4 rounded-md text-sm">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="text-red-700 bg-red-100 p-3 mb-4 rounded-md text-sm">
+            {error}
+          </div>
+        )}
 
-      {success && (
-        <div className="text-green-700 bg-green-100 p-3 mb-4 rounded-md text-sm">
-          {success}
-        </div>
-      )}
+        {success && (
+          <div className="text-green-700 bg-green-100 p-3 mb-4 rounded-md text-sm">
+            {success}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <input
-            name="username"
-            type="text"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            required
-            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <input
+              name="username"
+              type="text"
+              placeholder="Username"
+              value={form.username}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
 
-        <div className="mb-4">
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+          <div className="mb-4">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
 
-        <div className="mb-4">
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            minLength="6"
-            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+          <div className="mb-4">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength="6"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-2 rounded text-white font-semibold ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-orange-500 hover:bg-orange-600"
-          }`}
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-2 rounded-md text-white font-semibold transition duration-200 ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-orange-500 hover:bg-orange-600"
+            }`}
+          >
+            {loading ? "Registering..." : "Register"}
+          </button>
 
-        <p className="text-center mt-4 text-sm text-gray-700">
-          Already have an account?{" "}
-          <Link to="/login" className="text-orange-500 hover:underline">
-            Login
-          </Link>
-        </p>
-      </form>
+          <p className="text-center mt-4 text-sm text-gray-700">
+            Already have an account?{" "}
+            <Link to="/login" className="text-orange-500 hover:underline">
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

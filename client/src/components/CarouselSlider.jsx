@@ -1,33 +1,40 @@
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-
 function CarouselSlider({ movies }) {
   return (
-    <div className="w-full h-[40vh] rounded-lg overflow-hidden">
+    <div className="w-full h-[80vh] rounded-2xl overflow-hidden border-2 border-orange-500 shadow-lg relative">
       <Carousel
         autoPlay
         infiniteLoop
         showThumbs={false}
         showStatus={false}
-        interval={3000}
-        transitionTime={600}
+        interval={2500}
+        transitionTime={500}
         swipeable
         showArrows
         className="h-full"
       >
         {movies
-          .filter((movie) => movie.backdrop_path)
-          .map((movie) => (
-            <div key={movie.id} className="h-[40vh]">
+          .filter((item) => item.backdrop_path)
+          .map((item) => (
+            <div key={item.id} className="relative h-[80vh]">
               <img
-                src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                alt={movie.title}
+                src={`https://image.tmdb.org/t/p/original${item.backdrop_path}`}
+                alt={item.title || item.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 w-full bg-black/60 p-4">
-                <h2 className="text-white text-lg font-semibold">
-                  {movie.title}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+
+              {/* Overlay content */}
+              <div className="absolute bottom-20 left-10 text-left z-10 max-w-xl">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white drop-shadow-md mb-4">
+                  {item.title || item.name}
                 </h2>
+                <p className="text-sm md:text-base text-white/60 mb-2 line-clamp-2">
+                  {item.overview?.length
+                    ? item.overview
+                    : "No description available."}
+                </p>
               </div>
             </div>
           ))}
