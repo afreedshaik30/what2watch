@@ -124,6 +124,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>w2w-app</finalName>
 	</build>
 
 </project>
